@@ -1,0 +1,113 @@
+<html>
+
+<head>
+	<script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
+	<title>ZDog</title>
+	<link type='text/css' rel='stylesheet' href='index.css' />
+</head>
+
+<body>
+	<!-- Render target -->
+	<canvas class="zdog-canvas" width="600px" height="600px"></canvas>
+
+	<!-- Split this into its own script? -->
+	<script>
+
+		let COLORS = {
+			FEATHERS: {
+				LIGHT: 'grey',
+				DARK: 'darkslategrey'
+			},
+			BEAK: 'red',
+			PUPILS: 'black',
+			EYES: 'white'
+		}
+
+
+		// create illo
+		let illo = new Zdog.Illustration({
+			// set canvas with selector
+			element: '.zdog-canvas',
+			dragRotate: true,
+			zoom: 0.5
+		});
+
+		let dome = new Zdog.Hemisphere({
+			addTo: illo,
+			diameter: 120,
+			// fill enabled by default
+			// disable stroke for crisp edge
+			stroke: false,
+			color: COLORS.FEATHERS.LIGHT,
+			// backface: '#EA0',
+			rotate: { x: Zdog.TAU / 4, z: Zdog.TAU / 6 }
+		});
+
+		let face = new Zdog.Cylinder({
+			addTo: dome,
+			diameter: 120,
+			length: 200,
+			translate: { z: -99 },
+			stroke: false,
+			color: COLORS.FEATHERS.LIGHT,
+			// backface: '#E62',
+		});
+
+		let eye = new Zdog.Shape({
+			addTo: dome,
+			stroke: 20,
+			color: COLORS.EYES,
+			translate: { x: 50, y: -40, z: -10 }
+		});
+
+		let pupil = new Zdog.Shape({
+			addTo: eye,
+			stroke: 10,
+			color: 'black',
+			translate: { x: 10 }
+		});
+
+		eye.copyGraph({
+			// overwrite original options
+			translate: { x: 50, y: 40, z: -10 },
+		});
+
+		let beak = new Zdog.Cone({
+			addTo: face,
+			diameter: 70,
+			length: 90,
+			stroke: false,
+			color: 'red',
+			backface: '#C25',
+			rotate: { y: -Zdog.TAU / 4 },
+			translate: { x: 50, z: 50 }
+		});
+
+		let body = new Zdog.Shape({
+			addTo: illo,
+			stroke: 500,
+			color: COLORS.FEATHERS.DARK,
+			translate: {
+				y: 350,
+				z: -100,
+				x: -50
+			}
+		})
+
+		// update & render
+		illo.updateRenderGraph();
+
+		function animate() {
+			// rotate illo each frame
+			// illo.rotate.y += 0.03;
+			illo.updateRenderGraph();
+			// animate next frame
+			requestAnimationFrame(animate);
+		}
+		// start animation
+		animate();
+
+	</script>
+</body>
+
+</html>
