@@ -18,38 +18,83 @@
 				LIGHT: 'grey',
 				DARK: 'darkslategrey'
 			},
-			BEAK: 'red',
+			BEAK: 'goldenrod',
 			PUPILS: 'black',
-			EYES: 'white'
+			EYES: 'white',
+			SKIN: 'pink',
+			DEBUG: 'violet'
 		}
 
+		let isSpinning = false;
+		isSpinning = true;
 
 		// create illo
 		let illo = new Zdog.Illustration({
 			// set canvas with selector
 			element: '.zdog-canvas',
 			dragRotate: true,
-			zoom: 0.5
+			zoom: 0.4,
+			dragRotate: true,
+			translate: {
+				y: -300
+			},
+			// stop rotation when dragging starts
+			onDragStart: function () {
+				isSpinning = false;
+			},
 		});
+
+		// this holds all the bread
+		let bread = new Zdog.Group({
+			addTo: illo,
+			rotate: {
+				x: Zdog.TAU / 4
+			},
+			translate: {
+				y: 700
+			}
+		});
+
+		let crust = new Zdog.RoundedRect({
+			addTo: bread,
+			width: 120,
+			height: 80,
+			cornerRadius: 10,
+			stroke: 20,
+			color: '#EA0',
+			fill: true
+		});
+
+
+		let squish = crust.copyGraph({
+			color: 'white',
+			width: 100,
+			height: 60
+		})
+
+
 
 		let dome = new Zdog.Hemisphere({
 			addTo: illo,
 			diameter: 120,
-			// fill enabled by default
-			// disable stroke for crisp edge
-			stroke: false,
-			color: COLORS.FEATHERS.LIGHT,
-			// backface: '#EA0',
-			rotate: { x: Zdog.TAU / 4, z: Zdog.TAU / 6 }
+			color: COLORS.FEATHERS.DARK,
+			rotate: {
+				x: Zdog.TAU / 4,
+				z: Zdog.TAU / 4
+			},
 		});
+
 
 		let face = new Zdog.Cylinder({
 			addTo: dome,
 			diameter: 120,
 			length: 200,
-			translate: { z: -99 },
+			translate: {
+				z: -99
+			},
 			stroke: false,
-			color: COLORS.FEATHERS.LIGHT,
+			color: COLORS.FEATHERS.DARK,
+			// color: COLORS.DEBUG
 			// backface: '#E62',
 		});
 
@@ -77,35 +122,66 @@
 			diameter: 70,
 			length: 90,
 			stroke: false,
-			color: 'red',
-			backface: '#C25',
+			color: COLORS.BEAK,
+			// backface: '#C25',
 			rotate: { y: -Zdog.TAU / 4 },
-			translate: { x: 50, z: 50 }
+			translate: { x: 55, z: 50 }
 		});
 
 		let body = new Zdog.Shape({
 			addTo: illo,
 			stroke: 500,
-			color: COLORS.FEATHERS.DARK,
+			color: COLORS.FEATHERS.LIGHT,
 			translate: {
 				y: 350,
 				z: -100,
-				x: -50
 			}
 		})
 
-		// update & render
-		illo.updateRenderGraph();
+		let legs = new Zdog.Group({
+			addTo: body,
+			translate: {
+				y: 250
+			}
+		});
+
+		let leg = new Zdog.Shape({
+			addTo: legs,
+			translate: {
+				x: -100,
+			},
+			path: [
+				// { x: -32, y: -40 }, // start at top left
+				{ y: -40 }, // line origin
+				{ y: 40 }, // bottom of leg
+				{ x: -20, y: 40, z: 40 },
+				{ y: 40 }, // bottom of leg
+				{ y: 40, z: 40 },
+				{ y: 40 }, // bottom of leg
+				{ x: 20, y: 40, z: 40 }
+			],
+			closed: false,
+			stroke: 20,
+			color: COLORS.SKIN
+		});
+
+		leg.copyGraph({
+			translate: {
+				x: 100,
+			},
+			// color: 'red'
+		})
 
 		function animate() {
-			// rotate illo each frame
-			// illo.rotate.y += 0.03;
+			// rotate
+			if (isSpinning) {
+				illo.rotate.y += 0.03;
+			}
 			illo.updateRenderGraph();
-			// animate next frame
 			requestAnimationFrame(animate);
 		}
-		// start animation
 		animate();
+
 
 	</script>
 </body>
