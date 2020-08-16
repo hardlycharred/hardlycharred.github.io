@@ -1,0 +1,304 @@
+<html>
+
+<head>
+	<script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
+	<title>Pigeons</title>
+	<link type='text/css' rel='stylesheet' href='index.css' />
+</head>
+
+<body>
+	<!-- Render target -->
+	<canvas class="zdog-canvas" width="600px" height="600px"></canvas>
+</body>
+
+<!-- Split this into its own script? -->
+<script>
+	let COLORS = {
+		FEATHERS: {
+			LIGHT: 'grey',
+			DARK: 'darkslategrey'
+		},
+		BEAK: 'goldenrod',
+		PUPILS: 'black',
+		EYES: 'white',
+		SKIN: 'pink',
+		HAT: 'red',
+		TUFT: 'indigo',
+		CANDLE: 'white',
+		FLAME: 'orangered',
+		INNERFLAME: 'gold'
+	}
+
+	const DISTANCE = 800;
+
+	// create illo
+	let illo = new Zdog.Illustration({
+		// set canvas with selector
+		element: '.zdog-canvas',
+		dragRotate: true,
+		zoom: 0.4,
+		translate: {
+			y: -300
+		},
+		resize: true,
+	});
+
+	let cakeGrp = new Zdog.Group({
+		addTo: illo
+	});
+
+
+	let cake = new Zdog.Cylinder({
+		addTo: cakeGrp,
+		diameter: 300,
+		length: 100,
+		stroke: false,
+		color: 'saddlebrown',
+		backface: 'chocolate',
+		rotate: {
+			x: Zdog.TAU / 4
+		},
+		translate: {
+			y: 600
+		}
+	});
+
+	let candle = new Zdog.Shape({
+		addTo: cake,
+		path: [
+			{ z: 60 }, // line origin
+			{ z: 100 }, // bottom of leg
+		],
+		stroke: 20,
+		closed: false,
+		color: COLORS.CANDLE
+	})
+
+	let flame = new Zdog.Shape({
+		addTo: candle,
+		// no path set, default to single point
+		stroke: 30,
+		color: COLORS.FLAME,
+		translate: {
+			z: 100
+		}
+	});
+
+	flame.copyGraph({
+		stroke: 15,
+		color: COLORS.INNERFLAME
+	})
+
+
+
+
+
+	// // this holds all the bread
+	// let bread = new Zdog.Group({
+	// 	addTo: illo,
+	// 	rotate: {
+	// 		x: Zdog.TAU / 4
+	// 	},
+	// 	translate: {
+	// 		y: 650
+	// 	}
+	// });
+
+	// let crust = new Zdog.RoundedRect({
+	// 	addTo: bread,
+	// 	width: 120,
+	// 	height: 80,
+	// 	cornerRadius: 10,
+	// 	stroke: 20,
+	// 	color: '#EA0',
+	// 	fill: true
+	// });
+
+
+	// let squish = crust.copyGraph({
+	// 	color: 'white',
+	// 	width: 100,
+	// 	height: 60
+	// })
+
+
+	//  the first bird... built from the forehead down
+	let bird = new Zdog.Hemisphere({
+		addTo: illo,
+		diameter: 120,
+		color: COLORS.FEATHERS.DARK,
+		rotate: {
+			x: Zdog.TAU / 4,
+			z: Zdog.TAU / 4
+		},
+		translate: {
+			z: -DISTANCE
+		}
+	});
+
+	let hat = new Zdog.Cone({
+		addTo: bird,
+		diameter: 70,
+		length: 90,
+		stroke: false,
+		color: COLORS.HAT,
+		rotate: { y: Zdog.TAU },
+		translate: {
+			z: 50
+		}
+	});
+
+	let tuft = new Zdog.Shape({
+		addTo: hat,
+		translate: {
+			z: 80,
+			y: -40
+		},
+		path: [
+			{ x: -20, y: 40, z: 40 },
+			{ y: 40 }, // bottom of leg
+			{ y: 40, z: 40 },
+			{ y: 40 }, // bottom of leg
+			{ x: 20, y: 40, z: 40 }
+		],
+		closed: false,
+		stroke: 20,
+		color: COLORS.TUFT
+	});
+
+
+	let face = new Zdog.Cylinder({
+		addTo: bird,
+		diameter: 120,
+		length: 200,
+		translate: {
+			z: -99
+		},
+		stroke: false,
+		color: COLORS.FEATHERS.DARK,
+		// color: COLORS.DEBUG
+		// backface: '#E62',
+	});
+
+	let eye = new Zdog.Shape({
+		addTo: bird,
+		stroke: 20,
+		color: COLORS.EYES,
+		translate: { x: 50, y: -40, z: -10 }
+	});
+
+	let pupil = new Zdog.Shape({
+		addTo: eye,
+		stroke: 10,
+		color: 'black',
+		translate: { x: 10 }
+	});
+
+	eye.copyGraph({
+		// overwrite original options
+		translate: { x: 50, y: 40, z: -10 },
+	});
+
+	let beak = new Zdog.Cone({
+		addTo: face,
+		diameter: 70,
+		length: 90,
+		stroke: false,
+		color: COLORS.BEAK,
+		// backface: '#C25',
+		rotate: { y: -Zdog.TAU / 4 },
+		translate: {
+			x: 55,
+			z: 30
+		}
+	});
+
+	/**
+	* Gets too visually buggy when rotating :( sad
+	*  let pigeonNoseThing = new Zdog.Ellipse({
+	*  	addTo: beak,
+	*  	diameter: 80,
+	*  	quarters: 2,
+	*  	stroke: 20,
+	*  	color: 'white',
+	*  	rotate: {
+	*  		y: Zdog.TAU / 2
+	*  	}
+	*  });
+	*/
+
+	let body = new Zdog.Shape({
+		addTo: face,
+		stroke: 500,
+		color: COLORS.FEATHERS.LIGHT,
+		rotate: {
+			x: -Zdog.TAU / 4
+		},
+		translate: {
+			x: -100,
+			z: -250,
+		}
+	})
+
+	let legs = new Zdog.Group({
+		addTo: body,
+		translate: {
+			y: 250,
+		},
+		rotate: {
+			y: -Zdog.TAU / 4
+		}
+	});
+
+	let leg = new Zdog.Shape({
+		addTo: legs,
+		translate: {
+			x: -100,
+		},
+		path: [
+			{ y: -40 }, // line origin
+			{ y: 40 }, // bottom of leg
+			{ x: -20, y: 40, z: 40 },
+			{ y: 40 }, // bottom of leg
+			{ y: 40, z: 40 },
+			{ y: 40 }, // bottom of leg
+			{ x: 20, y: 40, z: 40 }
+		],
+		closed: false,
+		stroke: 20,
+		color: COLORS.SKIN
+	});
+
+	leg.copyGraph({
+		translate: {
+			x: 100,
+		}
+	})
+
+
+	// // another bird
+	// let rival = bird.copyGraph({
+	// 	translate: {
+	// 		z: DISTANCE
+	// 	},
+	// 	rotate: {
+	// 		x: Zdog.TAU / 4,
+	// 		z: -Zdog.TAU / 4
+	// 	}
+	// })
+
+	let isSpinning = true;
+	let canvas = document.querySelector('.zdog-canvas');
+	canvas.addEventListener('click', () => isSpinning = !isSpinning, false);
+
+	function animate() {
+		// rotate
+		if (isSpinning) illo.rotate.y += 0.02;
+		illo.updateRenderGraph();
+		requestAnimationFrame(animate);
+	}
+	animate();
+
+</script>
+
+</html>
