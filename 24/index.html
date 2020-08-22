@@ -2,7 +2,9 @@
 
 <head>
 	<script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
-	<title>Pigeons</title>
+	<script src="https://cdn.jsdelivr.net/npm/zfont/dist/zfont.min.js"></script>
+	<link rel="icon" type="image/png" href="./favicon.png"/>
+	<title>Pigeon</title>
 	<link type='text/css' rel='stylesheet' href='index.css' />
 </head>
 
@@ -13,6 +15,10 @@
 
 <!-- Split this into its own script? -->
 <script>
+
+	// for text
+	Zfont.init(Zdog);
+
 	let COLORS = {
 		FEATHERS: {
 			LIGHT: 'grey',
@@ -36,12 +42,46 @@
 		// set canvas with selector
 		element: '.zdog-canvas',
 		dragRotate: true,
+		resize: 'fullscreen',
 		zoom: 0.4,
 		translate: {
 			y: -300
 		},
 		resize: true,
 	});
+
+	var font = new Zdog.Font({
+		src: 'https://cdn.jsdelivr.net/gh/jaames/zfont/demo/fredokaone.ttf'
+	});
+
+	// Create a Text object
+	// Text objects behave like any other Zdog shape!
+	// https://github.com/jaames/zfont#zdogtext
+	var text = new Zdog.Text({
+		addTo: illo,
+		font: font,
+		value: "Happy Birthday!",
+		fontSize: 300,
+		textAlign: 'center',
+		textBaseline: 'middle',
+		color: '#fff',
+		fill: true,
+		translate: {
+			y: -500,
+		}
+	});
+
+	// Creating a darker duplicate of the text and pushing it backwards can help make it look like the text has depth
+	// (This is entirely optional!)
+	var shadow = text.copy({
+		addTo: illo,
+		translate: {
+			y: -500,
+			z: -6
+		},
+		color: '#aab',
+	});
+
 
 	let cakeGrp = new Zdog.Group({
 		addTo: illo
@@ -59,7 +99,7 @@
 			x: Zdog.TAU / 4
 		},
 		translate: {
-			y: 600
+			y: 550
 		}
 	});
 
@@ -67,7 +107,7 @@
 		addTo: cake,
 		path: [
 			{ z: 60 }, // line origin
-			{ z: 100 }, // bottom of leg
+			{ z: 100 },
 		],
 		stroke: 20,
 		closed: false,
@@ -254,6 +294,8 @@
 		addTo: legs,
 		translate: {
 			x: -100,
+			y: -15,
+			z: 100
 		},
 		path: [
 			{ y: -40 }, // line origin
@@ -264,6 +306,9 @@
 			{ y: 40 }, // bottom of leg
 			{ x: 20, y: 40, z: 40 }
 		],
+		rotate: {
+			x: Zdog.TAU / 4
+		},
 		closed: false,
 		stroke: 20,
 		color: COLORS.SKIN
@@ -272,6 +317,8 @@
 	leg.copyGraph({
 		translate: {
 			x: 100,
+			y: -15,
+			z: 100
 		}
 	})
 
